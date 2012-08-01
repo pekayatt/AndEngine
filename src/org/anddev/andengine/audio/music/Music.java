@@ -4,6 +4,7 @@ import org.anddev.andengine.audio.BaseAudioEntity;
 
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.util.Log;
 
 /**
  * (c) 2010 Nicolas Gramlich 
@@ -60,7 +61,11 @@ public class Music extends BaseAudioEntity {
 
 	@Override
 	public void stop() {
-		this.mMediaPlayer.stop();
+		try {
+			this.mMediaPlayer.stop();
+		} catch (Exception e){
+			Log.e("AndEngine", "Error in Stopping Music");
+		}
 	}
 
 	@Override

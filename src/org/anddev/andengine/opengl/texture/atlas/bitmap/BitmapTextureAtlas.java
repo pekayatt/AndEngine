@@ -14,6 +14,7 @@ import org.anddev.andengine.util.Debug;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.Color;
 import android.opengl.GLUtils;
 
 /**
@@ -150,6 +151,39 @@ public class BitmapTextureAtlas extends TextureAtlas<IBitmapTextureAtlasSource> 
 		final ArrayList<IBitmapTextureAtlasSource> textureSources = this.mTextureAtlasSources;
 		final int textureSourceCount = textureSources.size();
 
+		{
+			// dehaul: hack to get rid of the black lines
+			int blacklinesHackWidth  = 32;
+			int blacklinesHackHeight = 32;
+
+			int[] blacklinesHackColors = new int[blacklinesHackWidth * blacklinesHackHeight];
+			for (int y = 0; y < blacklinesHackHeight; y++) {
+				for (int x = 0; x < blacklinesHackWidth; x++) {
+					blacklinesHackColors[y * blacklinesHackWidth + x] = Color.TRANSPARENT;
+				}
+			}
+
+			Bitmap blacklinesHackBitmap = Bitmap.createBitmap(blacklinesHackColors, blacklinesHackWidth, blacklinesHackHeight, bitmapConfig);
+
+			if (blacklinesHackBitmap == null) {
+				throw new IllegalArgumentException("Blacklines Hack: returned a null Bitmap.");
+			}
+
+			for (int y = 0; y < this.mHeight; y += blacklinesHackHeight) {
+
+				for (int x = 0; x < this.mHeight; x += blacklinesHackWidth) {
+
+					if(preMultipyAlpha) {
+						GLUtils.texSubImage2D(GL10.GL_TEXTURE_2D, 0, x, y, blacklinesHackBitmap, glFormat, glType);
+					} else {
+						GLHelper.glTexSubImage2D(pGL, GL10.GL_TEXTURE_2D, 0, x, y, blacklinesHackBitmap, this.mPixelFormat);
+					}                      
+				}
+			}
+
+			blacklinesHackBitmap.recycle();
+		}
+
 		for(int j = 0; j < textureSourceCount; j++) {
 			final IBitmapTextureAtlasSource bitmapTextureAtlasSource = textureSources.get(j);
 			if(bitmapTextureAtlasSource != null) {
@@ -204,11 +238,39 @@ public class BitmapTextureAtlas extends TextureAtlas<IBitmapTextureAtlasSource> 
 	protected void bindTextureOnHardware(final GL10 pGL) {
 		super.bindTextureOnHardware(pGL);
 
+		//		if (pGL.glGetString(GL10.GL_VENDOR).equals("NVIDIA Corporation")) {
+		//			final Bitmap textureBitmap = Bitmap.createBitmap(this.mWidth, this.mHeight, this.mBitmapTextureFormat.getBitmapConfig());
+		//			// TODO Check if there is an easier/faster method to create a white
+		//			// placeholder bitmap.
+		//
+		//			GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, textureBitmap, 0);
+		//
+		//			textureBitmap.recycle();
+		//			
+		////			Log.e("Andengine","Tegra Device BAD CHOICE!");
+		//		} else {
 		final PixelFormat pixelFormat = this.mBitmapTextureFormat.getPixelFormat();
 		final int glFormat = pixelFormat.getGLFormat();
 		final int glType = pixelFormat.getGLType();
 		pGL.glTexImage2D(GL10.GL_TEXTURE_2D, 0, glFormat, this.mWidth, this.mHeight, 0, glFormat, glType, null);
+		//			Log.e("Andengine","Not Tegra, you should not have memory issues");
+		//		}
+
 	}
+
+	//  FOR TEGRA DEVICES
+	//	@Override
+	//	protected void bindTextureOnHardware(final GL10 pGL) {
+	//		super.bindTextureOnHardware(pGL);
+	//		
+	//		final Bitmap textureBitmap = Bitmap.createBitmap(this.mWidth, this.mHeight, this.mBitmapTextureFormat.getBitmapConfig());
+	//		// TODO Check if there is an easier/faster method to create a white
+	//		// placeholder bitmap.
+	//
+	//		GLUtils.texImage2D(GL10.GL_TEXTURE_2D, 0, textureBitmap, 0);
+	//
+	//		textureBitmap.recycle();
+	//	}
 
 	// ===========================================================
 	// Inner and Anonymous Classes

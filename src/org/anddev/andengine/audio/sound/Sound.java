@@ -2,6 +2,8 @@ package org.anddev.andengine.audio.sound;
 
 import org.anddev.andengine.audio.BaseAudioEntity;
 
+import android.util.Log;
+
 /**
  * (c) 2010 Nicolas Gramlich 
  * (c) 2011 Zynga Inc.
@@ -75,7 +77,11 @@ public class Sound extends BaseAudioEntity {
 	@Override
 	public void stop() {
 		if(this.mStreamID != 0) {
-			this.getAudioManager().getSoundPool().stop(this.mStreamID);
+			try {
+				this.getAudioManager().getSoundPool().stop(this.mStreamID);
+			} catch (Exception e){
+				Log.e("AndEngine", "Error in Stopping Audio");
+			}
 		}
 	}
 

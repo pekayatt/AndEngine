@@ -4,6 +4,7 @@ import org.anddev.andengine.opengl.texture.source.BaseTextureAtlasSource;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.Color;
 
 /**
  * (c) 2010 Nicolas Gramlich 
@@ -63,7 +64,13 @@ public class EmptyBitmapTextureAtlasSource extends BaseTextureAtlasSource implem
 
 	@Override
 	public Bitmap onLoadBitmap(final Config pBitmapConfig) {
-		return Bitmap.createBitmap(this.mWidth, this.mHeight, pBitmapConfig);
+		int[] colors = new int[this.mWidth * this.mHeight];
+		for (int y = 0; y < this.mHeight; y++) {
+			for (int x = 0; x < this.mWidth; x++) {
+				colors[y * this.mWidth + x] = Color.TRANSPARENT;
+			}
+		}
+		return Bitmap.createBitmap(colors,this.mWidth, this.mHeight, pBitmapConfig);
 	}
 
 	@Override

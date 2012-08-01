@@ -26,6 +26,9 @@ public class Particle extends Sprite {
 	boolean mDead = false;
 	private final PhysicsHandler mPhysicsHandler = new PhysicsHandler(this);
 
+	public float mInitialScaleX;
+	public float mInitialScaleY;
+
 	// ===========================================================
 	// Constructors
 	// ===========================================================;

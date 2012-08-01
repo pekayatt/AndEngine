@@ -134,7 +134,7 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 	}
 
 	public FontManager getFontManager() {
-		return this.mEngine.getFontManager();
+		return this.getFontManager();
 	}
 
 	public SoundManager getSoundManager() {
@@ -212,7 +212,7 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 			try {
 				this.mWakeLock.acquire();
 			} catch (final SecurityException e) {
-				Debug.e("You have to add\n\t<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>\nto your AndroidManifest.xml !", e);
+				//Debug.e("You have to add\n\t<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>\nto your AndroidManifest.xml !", e);
 			}
 		}
 	}

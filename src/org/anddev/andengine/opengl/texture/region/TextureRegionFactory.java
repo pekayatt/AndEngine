@@ -43,6 +43,11 @@ public class TextureRegionFactory {
 		textureRegion.setTextureRegionBufferManaged(pTextureRegionBufferManaged);
 		return textureRegion;
 	}
+	
+	public static PolygonTextureRegion extractPolygonFromTexture(final ITexture pTexture, final int pTexturePositionX, final int pTexturePositionY, final int pWidth, final int pHeight, final float[] pVertices)
+	{
+		return new PolygonTextureRegion(pTexture, pTexturePositionX, pTexturePositionY, pWidth, pHeight, pVertices);
+	}
 
 	public static <T extends ITextureAtlasSource> TextureRegion createFromSource(final ITextureAtlas<T> pTextureAtlas, final T pTextureAtlasSource, final int pTexturePositionX, final int pTexturePositionY, final boolean pCreateTextureRegionBuffersManaged) {
 		final TextureRegion textureRegion = new TextureRegion(pTextureAtlas, pTexturePositionX, pTexturePositionY, pTextureAtlasSource.getWidth(), pTextureAtlasSource.getHeight());
